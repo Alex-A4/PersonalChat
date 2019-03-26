@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "409161420140",
+    "firebase_url": "https://personalchat-ab9b9.firebaseio.com",
+    "project_id": "personalchat-ab9b9",
+    "storage_bucket": "personalchat-ab9b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409161420140:android:f31dceccb7cdd89c",
+        "android_client_info": {
+          "package_name": "alexa4.personal_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409161420140-apbfeq99e34047vjigdlvrhnvplumifp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-Xl2Om23LaZBC2N_1Nplqc0j7IVqrUx4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
