@@ -6,9 +6,11 @@ void main() {
   runApp(DynamicTheme(
     defaultBrightness: Brightness.light,
     data: (brightness) => ThemeData(
-      primaryColor: Colors.purpleAccent[400],
-      brightness: brightness,
-    ),
+          primaryColor: Colors.purpleAccent[400],
+          primaryTextTheme:
+              TextTheme(title: TextStyle(color: Colors.white, fontSize: 22.0)),
+          brightness: brightness,
+        ),
     themedWidgetBuilder: (context, theme) {
       return MaterialApp(
         theme: theme,
