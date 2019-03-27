@@ -20,6 +20,8 @@ dependencies:
   connectivity: ^0.4.2
   flutter_advanced_networkimage: ^0.4.15
   equatable: ^0.2.3
+  dynamic_theme: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:
