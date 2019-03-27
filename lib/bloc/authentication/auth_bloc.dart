@@ -1,14 +1,20 @@
 import 'package:bloc/bloc.dart';
+import 'package:personal_chat/repositories/user_repository.dart';
 import 'auth.dart';
 
 class AuthenticationBloc extends Bloc<AuthEvent, AuthState> {
+  final UserRepository userRepository;
+
+  AuthenticationBloc(this.userRepository);
+
   @override
   AuthState get initialState => AuthAppStartedState();
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStartedEvent) {
-      //TODO: load user data
+      await userRepository.restoreFromCache();
+      
       yield AuthLogInState();
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:personal_chat/repositories/user_repository.dart';
 import 'package:personal_chat/ui/auth_ui/log_in.dart';
 import 'package:personal_chat/ui/auth_ui/sign_in.dart';
 import 'package:personal_chat/ui/chat_ui/main_screen.dart';
@@ -18,7 +19,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    bloc = AuthenticationBloc();
+    bloc = AuthenticationBloc(UserRepository());
     bloc.dispatch(AppStartedEvent());
   }
 
