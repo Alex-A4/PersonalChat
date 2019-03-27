@@ -19,6 +19,7 @@ dependencies:
   cloud_firestore: ^0.9.7
   connectivity: ^0.4.2
   flutter_advanced_networkimage: ^0.4.15
+  equatable: ^0.2.3
 
 dev_dependencies:
   flutter_test:
