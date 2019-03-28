@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:personal_chat/bloc/authentication/auth.dart';
 import 'package:personal_chat/models/chat.dart';
+import 'package:personal_chat/ui/settings.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key}) : super(key: key);
@@ -15,6 +18,18 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Диалоги'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              BlocProvider.of<AuthenticationBloc>(context)
+                ..userRepository.logOutUser()
+                ..dispatch(AuthLogInEvent());
+//              Navigator.of(context).push(
+//                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: 25,
