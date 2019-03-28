@@ -45,7 +45,6 @@ class UserRepository with Connection {
   /// This method should be used after the [signInByPhoneNumber] method
   Future<Null> createFieldInDatabase() async {
     if (!await isConnected()) throw 'Check internet connectivity!';
-    assert(_user == null, 'User must not be null');
 
     QuerySnapshot snap = await Firestore.instance
         .collection('users')
@@ -73,6 +72,16 @@ class UserRepository with Connection {
       ShowSmsCheckDialog dialog, UserAuthenticated auth) async {
     if (!await isConnected()) throw 'Check internet connectivity!';
 
+    //Check is user already exist and skip error
+    if (await isAccountExistInFirestore(phone).catchError((err) {}))
+      throw 'Пользователь с таким номером телефона уже существует';
+
+    await _signInByPhone(userName, phone, dialog, auth);
+  }
+
+  //Method to sign in into firebaseAuth, it uses to log in or sign in
+  Future<Null> _signInByPhone(String userName, String phone,
+      ShowSmsCheckDialog dialog, UserAuthenticated auth) async {
     String verificationId;
 
     ///Verify sms code by checking is user already authenticated
@@ -81,17 +90,28 @@ class UserRepository with Connection {
       var fireUser = await FirebaseAuth.instance.currentUser();
       _user = User(userName, phone);
 
-      if (fireUser == null)
-        await FirebaseAuth.instance.signInWithCredential(
-            PhoneAuthProvider.getCredential(
-                verificationId: verificationId, smsCode: sms));
+      if (fireUser == null) {
+        try {
+          await FirebaseAuth.instance.signInWithCredential(
+              PhoneAuthProvider.getCredential(
+                  verificationId: verificationId, smsCode: sms));
+        } catch (e) {
+          //If SMS code is wrong
+          auth(false);
+          return;
+        }
+      }
 
       await createFieldInDatabase();
+      await saveToCache();
       auth(true);
     };
 
     ///Supporting callbacks for verifying phone number
-    final autoRetrieve = (String verId) => verificationId = verId;
+    final autoRetrieve = (String verId) {
+      verificationId = verId;
+      auth(true);
+    };
     final smsCodeSent = (String verId, [int forceCodeResult]) {
       verificationId = verId;
       print('VerId : $verificationId');
@@ -108,6 +128,34 @@ class UserRepository with Connection {
         verificationFailed: verifiedFailed,
         codeSent: smsCodeSent,
         codeAutoRetrievalTimeout: autoRetrieve);
+  }
+
+  ///Check is user exist in firestore
+  Future<bool> isAccountExistInFirestore(String phone) async {
+    QuerySnapshot snap = await Firestore.instance
+        .collection('users')
+        .where('userPhone', isEqualTo: phone)
+        .getDocuments();
+
+    if (snap.documents.length == 0) return false;
+
+    return true;
+  }
+
+  ///Log in user with it's phone number
+  Future<Null> logInByPhoneNumber(String phone, ShowSmsCheckDialog dialog,
+      UserAuthenticated auth) async {
+    //Check is user already exist
+    if (!await isAccountExistInFirestore(phone))
+      throw 'Пользователь с таким номером не существует';
+
+    QuerySnapshot snap = await Firestore.instance
+        .collection('users')
+        .where('userPhone', isEqualTo: phone)
+        .getDocuments();
+
+    await _signInByPhone(
+        snap.documents[0].data['userName'], phone, dialog, auth);
   }
 }
 
