@@ -4,18 +4,25 @@ class User {
   final String name;
   final String phoneNumber;
 
+  ///List of chats hash where user participate
+  final List<int> chatsHash;
+
   //Default constructor for user
-  User(this.name, this.phoneNumber);
+  User(this.name, this.phoneNumber) : this.chatsHash = [];
 
   //Restore user from JSON object
   User.fromJson(Map<String, dynamic> data)
       : name = data['userName'],
-        phoneNumber = data['userPhone'];
+        chatsHash = [],
+        phoneNumber = data['userPhone'] {
+    data['chatsHash'].forEach((hash) => chatsHash.add(hash as int));
+  }
 
   //Convert user to JSON object
   Map<String, dynamic> toJson() => {
         'userName': name,
         'userPhone': phoneNumber,
+        'chatsHash': chatsHash,
       };
 
   @override

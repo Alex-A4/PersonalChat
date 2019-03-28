@@ -20,6 +20,7 @@ void main() {
 void testUserCreatingRestoring() {
   print('testUserCreatingRestoring()');
   User user = User('Vasya Pupkin', '+79115923175');
+  user.chatsHash.addAll([3958737792, 6958237593]);
   print(user.toJson());
   User newUser = User.fromJson(user.toJson());
   print(newUser.toJson());
