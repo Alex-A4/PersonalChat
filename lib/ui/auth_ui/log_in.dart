@@ -10,6 +10,15 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
+  TextEditingController _phoneController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +30,12 @@ class _LogInScreenState extends State<LogInScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            TextField(
+              controller: _phoneController,
+              maxLines: 1,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(hintText: '+7 777 666 33 22'),
+            ),
             RaisedButton(
               onPressed: () {
                 BlocProvider.of<AuthenticationBloc>(context)
@@ -33,6 +48,17 @@ class _LogInScreenState extends State<LogInScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Text('Войти'),
+            ),
+            SizedBox(height: 30.0),
+            FlatButton(
+              onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(context)
+                    .dispatch(AuthSignInEvent());
+              },
+              textColor: Colors.purpleAccent[400],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Text('Нет аккаунта?'),
             ),
           ],
         ),
