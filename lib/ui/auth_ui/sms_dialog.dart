@@ -22,14 +22,19 @@ class _SmsVerifyDialogState extends State<SmsVerifyDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       title: Text('Введите SMS код'),
-      content: TextField(
-        controller: _smsController,
-        decoration: InputDecoration(hintText: '123456'),
-        maxLength: 6,
-        keyboardType: TextInputType.number,
+      content: Container(
+        width: 100.0,
+        child: TextField(
+          textAlign: TextAlign.center,
+          controller: _smsController,
+          decoration: InputDecoration(hintText: '123456'),
+          maxLength: 6,
+          keyboardType: TextInputType.number,
+        ),
       ),
-      contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+      contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       actions: <Widget>[
         FlatButton(
           onPressed: () {
