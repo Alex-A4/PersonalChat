@@ -15,7 +15,7 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStartedEvent) {
       await userRepository.restoreFromCache();
-      await ChatRepository.buildInstance();
+      await ChatRepository.buildInstance(userRepository);
 
       yield userRepository.isUserExist()
           ? AuthAuthenticatedState
