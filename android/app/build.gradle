@@ -21,6 +21,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 configurations.all {
     resolutionStrategy {
         resolutionStrategy.eachDependency { details ->
@@ -60,6 +66,21 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias keystoreProperties['keyAliasDeb']
+            keyPassword keystoreProperties['keyPasswordDeb']
+            storeFile file(keystoreProperties['storeFileDeb'])
+            storePassword keystoreProperties['storePasswordDeb']
+        }
+        release{
+            keyAlias keystoreProperties['keyAliasRel']
+            keyPassword keystoreProperties['keyPasswordRel']
+            storeFile file(keystoreProperties['storeFileRel'])
+            storePassword keystoreProperties['storePasswordRel']
+        }
     }
 
     buildTypes {
