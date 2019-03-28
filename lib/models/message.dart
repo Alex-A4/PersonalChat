@@ -1,6 +1,7 @@
 ///The PODO class that describes one message into the chat
 class Message {
-  //The time of message when it was send
+  ///The time of message when it was send
+  /// All time storing in UTC, but when it shows to user, it converts to local
   final DateTime messageTime;
 
   /// The context of message, it could be text, image url, audio file url, sticker
@@ -25,7 +26,8 @@ class Message {
 
   //Constructor to create object from JSON data
   Message.fromJson(Map<String, dynamic> data)
-      : this.messageTime = DateTime.parse(data['time']),
+      : this.messageTime =
+            DateTime.fromMicrosecondsSinceEpoch(data['time'], isUtc: true),
         this.context = data['context'],
         this.status = data['status'],
         this.senderHash = data['senderHash'] {
@@ -51,7 +53,7 @@ class Message {
   //Method to convert Message object to JSON
   Map<String, dynamic> toJson() => {
         'type': this.type.index,
-        'time': this.messageTime.toUtc().toString(),
+        'time': this.messageTime.toUtc().millisecondsSinceEpoch,
         'context': this.context,
         'status': this.status,
         'senderHash': this.senderHash,

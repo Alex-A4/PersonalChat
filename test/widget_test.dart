@@ -67,14 +67,14 @@ Map<String, dynamic> getJsonChat() => {
       'messages': [
         {
           'type': 0,
-          'time': '2019-03-27 19:01:45.834067Z',
+          'time': 1553772844506,
           'context': 'WTF?',
           'status': true,
           'senderHash': 1407034086
         },
         {
           'type': 0,
-          'time': '2019-03-27 19:01:45.834618Z',
+          'time': 1553772844507,
           'context': "It's ok",
           'status': false,
           'senderHash': 572334810
