@@ -18,7 +18,7 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthState> {
       await ChatRepository.buildInstance(userRepository);
 
       yield userRepository.isUserExist()
-          ? AuthAuthenticatedState
+          ? AuthAuthenticatedState()
           : AuthLogInState();
     }
 
