@@ -39,6 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
       showDialog(
           context: context,
           builder: (context) => SmsVerifyDialog(
+            key: ValueKey("SmsDialog"),
                 smsFunc: func,
               ));
     };
@@ -85,7 +86,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 10.0,
               ),
               Text(
-                'На указанный номер телефона будет отправлено SMS для подтверждения',
+                'На указанный номер телефона будет отправлено SMS '
+                    'для подтверждения, оно будет действительно в течение 60 сек.',
                 style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
               ),
               SizedBox(

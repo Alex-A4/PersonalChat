@@ -64,9 +64,25 @@ class _LogInScreenState extends State<LogInScreen> {
                 },
               ),
             ),
+
             SizedBox(
-              height: 30.0,
+              height: 10.0,
             ),
+
+            Container(
+              width: 300.0,
+              child: Text(
+                'На указанный номер телефона будет отправлено SMS '
+                    'для подтверждения, оно будет действительно в течение 60 сек.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
+              ),
+            ),
+
+            SizedBox(
+              height: 20.0,
+            ),
+
             RaisedButton(
               onPressed: () {
                 BlocProvider.of<AuthenticationBloc>(context)
