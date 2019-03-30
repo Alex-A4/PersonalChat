@@ -90,6 +90,7 @@ class UserRepository with Connection {
       var fireUser = await FirebaseAuth.instance.currentUser();
       _user = User(userName, phone);
 
+      print('Firebase user in signIn: ${fireUser}');
       if (fireUser == null) {
         try {
           await FirebaseAuth.instance.signInWithCredential(
@@ -108,16 +109,26 @@ class UserRepository with Connection {
     };
 
     ///Supporting callbacks for verifying phone number
-    final autoRetrieve = (String verId) {
+    final autoRetrieve = (String verId) async {
       verificationId = verId;
+
+      _user = User(userName, phone);
+      if (!await isAccountExistInFirestore(phone))
+        await createFieldInDatabase();
+
       auth(true);
     };
     final smsCodeSent = (String verId, [int forceCodeResult]) {
       verificationId = verId;
-      print('VerId : $verificationId');
       dialog(verifySmsCode);
     };
-    final verifiedSuccess = (FirebaseUser user) => auth(true);
+    final verifiedSuccess = (FirebaseUser user) async {
+      _user = User(userName, phone);
+      if (!await isAccountExistInFirestore(phone))
+        await createFieldInDatabase();
+
+      auth(true);
+    };
     final verifiedFailed = (AuthException exception) => auth(false);
 
     //Calling method to verify phone number with sms code
