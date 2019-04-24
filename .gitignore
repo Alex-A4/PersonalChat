@@ -2,6 +2,7 @@
 keystore/
 key.properties
 
+design
 # Miscellaneous
 *.class
 *.log
