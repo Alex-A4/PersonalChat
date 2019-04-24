@@ -3,13 +3,14 @@ import 'package:personal_chat/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../mixins/connection.dart';
 
 /// Repository that describes communication between firebase and phone
 ///
 /// This repository is a singleton instance that creates with [buildInstance]
 ///
 /// That's contains info about all chats where user participate
-class ChatRepository {
+class ChatRepository with Connection{
   //Json codec to decode/encode json objects
   final JsonCodec _codec = JsonCodec();
 
@@ -23,7 +24,7 @@ class ChatRepository {
 
   ///Build instance of chat by restoring from cache
   /// It must be called before [getInstance]
-  static Future buildInstance(UserRepository userRepo) async {
+  static Future<void> buildInstance(UserRepository userRepo) async {
     _instance = ChatRepository._();
     _instance._userRepository = userRepo;
 
@@ -37,7 +38,7 @@ class ChatRepository {
   ChatRepository._() : chats = [];
 
   //Restore chat instance from local cache
-  Future _restoreFromCache() async {
+  Future<void> _restoreFromCache() async {
     var prefs = await SharedPreferences.getInstance();
 
     String chatsString = prefs.getString('chats');
@@ -49,18 +50,21 @@ class ChatRepository {
   }
 
   //Save info about chats to local cache
-  Future saveToCache() async {
+  Future<void> saveToCache() async {
     var prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString(
-        'chats', _codec.encode(chats.map((chat) => chat.toJson()).toList()));
+    await prefs.setString('chats', getChatsInJsonString());
   }
+
+  String getChatsInJsonString() =>
+      _codec.encode(chats.map((chat) => chat.toJson()).toList());
+
 
   ///Get all chats where user participate
   /// Chats in firebase looks like:
   /// (collection)chats -> (document){} ->
-  Future getUserChats() async {
-//    Firestore.instance.collection('chats').document('111').collection('').snapshots()
+  Future<void> getUserChats() async {
+    if (!await isConnected()) throw 'Check inet';
 
     //Find any chats where user participate
     QuerySnapshot doc1 = await Firestore.instance
@@ -74,8 +78,34 @@ class ChatRepository {
 
     //Put all founded chats references into one list
     List<DocumentReference> chatsWithUser = [];
-    chatsWithUser..addAll(
-        doc1.documents.map((doc) => doc.reference).toList())..addAll(
-        doc2.documents.map((doc) => doc.reference).toList());
+    chatsWithUser
+      ..addAll(doc1.documents.map((doc) => doc.reference).toList())
+      ..addAll(doc2.documents.map((doc) => doc.reference).toList());
+
+    print('Count of chats with user : ${chatsWithUser.length}');
+
+    chatsWithUser.forEach((chat) {
+      chat.snapshots().listen(
+          (snap) => print('In Chat ${chat.documentID}, data : ${snap.data}'));
+    });
+  }
+
+  ///Creating new chat into firebase with specified interlocutor which could
+  /// be identify with [interlocutorHash]
+  Future<void> createNewChat(int interlocutorHash) async {
+    if (!await isConnected()) throw 'Check inet';
+
+    Chat chat = Chat(
+        hashPerson1: _userRepository.user.hashCode,
+        hashPerson2: interlocutorHash);
+
+    chats.add(chat);
+
+    //Add new chat instance to firebase
+    DocumentReference chatRef = await Firestore.instance.collection('chats').add({
+      'person1': _userRepository.user.hashCode,
+      'person2': interlocutorHash,
+      'chatHash': chat.hashCode
+    });
   }
 }
