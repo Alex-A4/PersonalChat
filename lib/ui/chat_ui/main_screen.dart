@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
 import 'package:personal_chat/models/chat.dart';
+import 'package:personal_chat/repositories/chat_repository.dart';
 import 'package:personal_chat/ui/settings.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,6 +14,8 @@ class MainScreen extends StatefulWidget {
 
 //TODO: wrap listView with streamBuilder to update chats in real time
 class _MainScreenState extends State<MainScreen> {
+  ChatRepository _chatRepo = ChatRepository.getInstance();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,41 +25,41 @@ class _MainScreenState extends State<MainScreen> {
           IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              BlocProvider.of<AuthenticationBloc>(context)
-                ..userRepository.logOutUser()
-                ..dispatch(AuthLogInEvent());
-//              Navigator.of(context).push(
-//                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+//              BlocProvider.of<AuthenticationBloc>(context)
+//                ..userRepository.logOutUser()
+//                ..dispatch(AuthLogInEvent());
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingsScreen()));
             },
           ),
         ],
       ),
       body: ListView.builder(
-        itemCount: 25,
+        itemCount: _chatRepo.chats.length,
         itemBuilder: (context, index) {
-          return getListItem(null, index);
+          return getListItem(_chatRepo.chats[index]);
         },
       ),
     );
   }
 
   //Get the item of list
-  //TODO: add getting info about user by hash
-  Widget getListItem(Chat chat, int index) {
+  Widget getListItem(Chat chat) {
+    var interlocutorPhone =
+        chat.person1Phone == _chatRepo.userRepository.user.phoneNumber
+            ? chat.person2Phone
+            : chat.person1Phone;
     return ListTile(
-      title: Text('User Name'),
+      title: Text(interlocutorPhone),
       subtitle: Text(
-        'The last message that other user past to that user. We need to do something with that',
+        chat.messages.first.context,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
 
       //If last message not read so show icon
-      trailing: index % 2 == 0
-          ? Container(
-              width: 1,
-              height: 1,
-            )
+      trailing: chat.messages.first.isRead
+          ? Container()
           : Container(
               decoration: ShapeDecoration(
                   color: Colors.purpleAccent[400],
