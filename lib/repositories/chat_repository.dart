@@ -10,7 +10,7 @@ import '../mixins/connection.dart';
 /// This repository is a singleton instance that creates with [buildInstance]
 ///
 /// That's contains info about all chats where user participate
-class ChatRepository with Connection{
+class ChatRepository with Connection {
   //Json codec to decode/encode json objects
   final JsonCodec _codec = JsonCodec();
 
@@ -59,7 +59,6 @@ class ChatRepository with Connection{
   String getChatsInJsonString() =>
       _codec.encode(chats.map((chat) => chat.toJson()).toList());
 
-
   ///Get all chats where user participate
   /// Chats in firebase looks like:
   /// (collection)chats -> (document){} ->
@@ -84,6 +83,7 @@ class ChatRepository with Connection{
 
     print('Count of chats with user : ${chatsWithUser.length}');
 
+    /// TODO: add listening of streams
     chatsWithUser.forEach((chat) {
       chat.snapshots().listen(
           (snap) => print('In Chat ${chat.documentID}, data : ${snap.data}'));
@@ -102,10 +102,23 @@ class ChatRepository with Connection{
     chats.add(chat);
 
     //Add new chat instance to firebase
-    DocumentReference chatRef = await Firestore.instance.collection('chats').add({
+    DocumentReference chatRef =
+        await Firestore.instance.collection('chats').add({
       'person1': _userRepository.user.hashCode,
       'person2': interlocutorHash,
       'chatHash': chat.hashCode
     });
+  }
+
+  /// Read DB and find user with [phoneNumber] and then return his hash
+  /// or null if there is no user with that number
+  Future<int> findUserHashByPhoneNumber(String phoneNumber) async {
+    QuerySnapshot snap = await Firestore.instance
+        .collection('users')
+        .where('userPhone', isEqualTo: phoneNumber)
+        .getDocuments();
+    if (snap.documents.length != 0)
+      return snap.documents[0].data['userHash'];
+    else return null;
   }
 }
