@@ -17,6 +17,8 @@ class ChatRepository with Connection {
   //Instance of user repository, needs to get info about user
   UserRepository _userRepository;
 
+  UserRepository get userRepository => _userRepository;
+
   //Singleton instance of class
   static ChatRepository _instance;
 
@@ -91,8 +93,9 @@ class ChatRepository with Connection {
   }
 
   ///Creating new chat into firebase with specified interlocutor which could
-  /// be identify with [interlocutorHash]
-  Future<void> createNewChat(int interlocutorHash) async {
+  /// be identify with [interlocutorHash] and [interlocutorPhone]
+  Future<void> createNewChat(
+      int interlocutorHash, String interlocutorPhone) async {
     if (!await isConnected()) throw 'Check inet';
 
     Chat chat = Chat(
@@ -106,6 +109,8 @@ class ChatRepository with Connection {
         await Firestore.instance.collection('chats').add({
       'person1': _userRepository.user.hashCode,
       'person2': interlocutorHash,
+      'pers1Phone': _userRepository.user.phoneNumber,
+      'pers2Phone': interlocutorPhone,
       'chatHash': chat.hashCode
     });
   }
@@ -119,6 +124,7 @@ class ChatRepository with Connection {
         .getDocuments();
     if (snap.documents.length != 0)
       return snap.documents[0].data['userHash'];
-    else return null;
+    else
+      return null;
   }
 }
