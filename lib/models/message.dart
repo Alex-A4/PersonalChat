@@ -8,7 +8,7 @@ class Message {
   final String context;
 
   ///The status of message: true - read, false - not read
-  final bool status;
+  final bool isRead;
 
   ///The hash code of person who send this message
   final int senderHash;
@@ -20,7 +20,7 @@ class Message {
   Message(
       {this.messageTime,
       this.context,
-      this.status,
+      this.isRead,
       this.senderHash,
       this.type});
 
@@ -29,7 +29,7 @@ class Message {
       : this.messageTime =
             DateTime.fromMicrosecondsSinceEpoch(data['time'], isUtc: true),
         this.context = data['context'],
-        this.status = data['status'],
+        this.isRead = data['isRead'],
         this.senderHash = data['senderHash'] {
     switch (data['type'].toInt()) {
       case 0:
@@ -55,7 +55,7 @@ class Message {
         'type': this.type.index,
         'time': this.messageTime.toUtc().millisecondsSinceEpoch,
         'context': this.context,
-        'status': this.status,
+        'isRead': this.isRead,
         'senderHash': this.senderHash,
       };
 }
