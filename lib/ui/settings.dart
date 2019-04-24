@@ -1,20 +1,22 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen({Key key}) : super(key: key);
+  SettingsScreen({Key key, this.bloc}) : super(key: key);
+
+  final AuthenticationBloc bloc;
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  AuthenticationBloc get bloc => widget.bloc;
+  bool nightMode = false;
+
   @override
   Widget build(BuildContext context) {
-    bool nightMode = false;
-
     return Scaffold(
       appBar: AppBar(title: Text('Настройки')),
       body: SingleChildScrollView(
@@ -25,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: Switch(
                   value: nightMode,
                   onChanged: (newValue) {
-                    nightMode = newValue;
+                    setState(() => nightMode = newValue);
                     DynamicTheme.of(context).setBrightness(
                         nightMode ? Brightness.dark : Brightness.light);
                   }),
@@ -36,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () {
                 Navigator.of(context).pop();
 
-                BlocProvider.of<AuthenticationBloc>(context)
+                bloc
                   ..userRepository.logOutUser()
                   ..dispatch(AuthLogInEvent());
               },
