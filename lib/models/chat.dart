@@ -27,11 +27,15 @@ class Chat {
         .forEach((message) => messages.add(Message.fromJson(message)));
   }
 
-  //Convert chat to JSON object
-  Map<String, dynamic> toJson() => {
-        'chatHash': this.chatHash,
-        'hash1': this.hashPerson1,
-        'hash2': this.hashPerson2,
-        'messages': messages.map((message) => message.toJson()).toList(),
-      };
+  /// Convert chat to JSON object
+  /// Save just last 20 messages to reduce needed memory
+  Map<String, dynamic> toJson() {
+    var msg = messages.length > 19 ? messages.getRange(0, 20) : messages;
+    return {
+      'chatHash': this.chatHash,
+      'hash1': this.hashPerson1,
+      'hash2': this.hashPerson2,
+      'messages': msg.map((message) => message.toJson()).toList(),
+    };
+  }
 }
