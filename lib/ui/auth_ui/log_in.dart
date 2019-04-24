@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
+import 'package:personal_chat/main.dart';
 import 'package:personal_chat/repositories/user_repository.dart';
 import 'package:personal_chat/ui/auth_ui/sms_dialog.dart';
 
@@ -64,11 +65,9 @@ class _LogInScreenState extends State<LogInScreen> {
                 },
               ),
             ),
-
             SizedBox(
               height: 10.0,
             ),
-
             Container(
               width: 300.0,
               child: Text(
@@ -78,21 +77,21 @@ class _LogInScreenState extends State<LogInScreen> {
                 style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
               ),
             ),
-
             SizedBox(
               height: 20.0,
             ),
-
             RaisedButton(
               onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context)
-                    .userRepository
-                    .logInByPhoneNumber(_phoneController.text, dialog, authenticated)
-                    .catchError(
-                        (err) => Fluttertoast.showToast(msg: err.toString()));
+                if (_phoneController.text.isNotEmpty)
+                  BlocProvider.of<AuthenticationBloc>(context)
+                      .userRepository
+                      .logInByPhoneNumber(
+                          _phoneController.text, dialog, authenticated)
+                      .catchError(
+                          (err) => Fluttertoast.showToast(msg: err.toString()));
               },
               elevation: 5.0,
-              color: Colors.purpleAccent[400],
+              color: lightTheme.buttonColor,
               textColor: Colors.white,
               padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
               shape: RoundedRectangleBorder(
@@ -108,7 +107,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 BlocProvider.of<AuthenticationBloc>(context)
                     .dispatch(AuthSignInEvent());
               },
-              textColor: Colors.purpleAccent[400],
+              textColor: lightTheme.accentColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Text('Нет аккаунта?'),

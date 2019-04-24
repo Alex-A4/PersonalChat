@@ -6,7 +6,8 @@ void main() {
   runApp(DynamicTheme(
     defaultBrightness: Brightness.light,
     data: (brightness) => ThemeData(
-          primaryColor: Colors.purpleAccent[400],
+          primarySwatch:
+              lightTheme.copyWith(brightness: brightness).primaryColor,
           primaryTextTheme:
               TextTheme(title: TextStyle(color: Colors.white, fontSize: 22.0)),
           brightness: brightness,
@@ -19,3 +20,9 @@ void main() {
     },
   ));
 }
+
+var lightTheme = ThemeData(
+  primaryColor: Colors.deepPurple,
+  accentColor: Color(0xFF0B5FA5),
+  buttonColor: Color(0xFFFF9400),
+);

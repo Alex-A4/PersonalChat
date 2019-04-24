@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
+import 'package:personal_chat/main.dart';
 import 'package:personal_chat/models/chat.dart';
 import 'package:personal_chat/repositories/chat_repository.dart';
 import 'package:personal_chat/ui/settings.dart';
@@ -53,7 +54,7 @@ class MainScreen extends StatelessWidget {
           ? Container()
           : Container(
               decoration: ShapeDecoration(
-                  color: Colors.purpleAccent[400],
+                  color: lightTheme.accentColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0))),
               width: 6,

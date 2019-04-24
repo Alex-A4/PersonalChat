@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_chat/bloc/authentication/auth.dart';
+import 'package:personal_chat/main.dart';
 import 'package:personal_chat/ui/auth_ui/sms_dialog.dart';
 import '../../repositories/user_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -39,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
       showDialog(
           context: context,
           builder: (context) => SmsVerifyDialog(
-            key: ValueKey("SmsDialog"),
+                key: ValueKey("SmsDialog"),
                 smsFunc: func,
               ));
     };
@@ -114,17 +115,18 @@ class _SignInScreenState extends State<SignInScreen> {
               RaisedButton(
                 //TODO: add checking phone with RegExp
                 onPressed: () {
-                  BlocProvider.of<AuthenticationBloc>(context)
-                      .userRepository
-                      .signInByPhoneNumber(_nameController.text,
-                          _phoneController.text, dialog, authenticated)
-                      .catchError(
-                          (err) => Fluttertoast.showToast(msg: err.toString()));
+                  if (_phoneController.text.isNotEmpty)
+                    BlocProvider.of<AuthenticationBloc>(context)
+                        .userRepository
+                        .signInByPhoneNumber(_nameController.text,
+                            _phoneController.text, dialog, authenticated)
+                        .catchError((err) =>
+                            Fluttertoast.showToast(msg: err.toString()));
                 },
                 padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
-                color: Colors.purpleAccent[400],
+                color: lightTheme.buttonColor,
                 textColor: Colors.white,
                 child: Text(
                   'Зарегистрироваться',
