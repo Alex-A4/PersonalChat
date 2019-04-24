@@ -35,18 +35,18 @@ void testChatCreating() {
         messageTime: DateTime.now(),
         context: 'WTF?',
         senderHash: user1.hashCode,
-        status: true,
+        isRead: true,
         type: MessageType.Text),
     Message(
         messageTime: DateTime.now(),
         context: "It's ok",
         senderHash: user2.hashCode,
-        status: false,
+        isRead: false,
         type: MessageType.Text)
   ];
 
   Chat chat = Chat(hashPerson1: user1.hashCode, hashPerson2: user2.hashCode);
-  chat.messages = messages;
+  messages.forEach((message) => chat.addMessage(message));
   print(chat.toJson());
   print('------------------------------');
 }
