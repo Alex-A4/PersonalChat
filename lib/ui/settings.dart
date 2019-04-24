@@ -34,6 +34,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: Icon(Icons.exit_to_app),
               title: Text('Выйти'),
               onTap: () {
+                Navigator.of(context).pop();
+
                 BlocProvider.of<AuthenticationBloc>(context)
                   ..userRepository.logOutUser()
                   ..dispatch(AuthLogInEvent());
