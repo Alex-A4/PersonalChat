@@ -5,15 +5,8 @@ import 'package:personal_chat/models/chat.dart';
 import 'package:personal_chat/repositories/chat_repository.dart';
 import 'package:personal_chat/ui/settings.dart';
 
-class MainScreen extends StatefulWidget {
-  MainScreen({Key key}) : super(key: key);
-
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
 //TODO: wrap listView with streamBuilder to update chats in real time
-class _MainScreenState extends State<MainScreen> {
+class MainScreen extends StatelessWidget {
   ChatRepository _chatRepo = ChatRepository.getInstance();
 
   @override
@@ -23,13 +16,11 @@ class _MainScreenState extends State<MainScreen> {
         title: Text('Диалоги'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.settings),
             onPressed: () {
-//              BlocProvider.of<AuthenticationBloc>(context)
-//                ..userRepository.logOutUser()
-//                ..dispatch(AuthLogInEvent());
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+              var bloc = BlocProvider.of<AuthenticationBloc>(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SettingsScreen(bloc: bloc)));
             },
           ),
         ],
